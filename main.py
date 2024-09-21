@@ -136,7 +136,7 @@ class ShellEmulatorGUI(tk.Tk):
 
     def insert_command_return(self):
         self.command_entry.delete(0, tk.END)
-        self.command_entry.insert(0, "cd /")  # Возвращаемся в корень виртуальной ФС
+        self.command_entry.insert(0, "return")  # Обновляем команду для возврата в корень
 
     def insert_command_exit(self):
         self.command_entry.delete(0, tk.END)
@@ -186,6 +186,11 @@ class ShellEmulatorGUI(tk.Tk):
                 )
             else:
                 self.output_text.insert(tk.END, "Использование: cat <имя файла>\n")
+        elif command == 'return':
+            self.command_return()  # Вызываем команду возврата в корень
+            self.output_text.insert(
+                tk.END, "\n# Возвращение в корневую директорию виртуальной файловой системы.\n"
+            )
         elif command == 'exit':
             self.output_text.insert(tk.END, "\n# Выход из эмулятора...\n")
             self.close_emulator()
@@ -296,6 +301,11 @@ class ShellEmulatorGUI(tk.Tk):
         else:
             self.output_text.insert(tk.END, f"Ошибка: Директория '{path}' не найдена.\n")
 
+    def command_return(self):
+        """Возврат в корневую директорию виртуальной ФС"""
+        self.current_dir = '/'  # Устанавливаем текущую виртуальную директорию как корневую
+        os.chdir(self.root_dir)  # Меняем текущую реальную директорию на корень виртуальной ФС
+
     def close_emulator(self):
         """Метод выхода из эмулятора"""
         if messagebox.askokcancel("Выход", "Вы хотите выйти из эмулятора?"):
@@ -311,7 +321,7 @@ def main():
     app.open_virtual_fs(archive_path)
 
     app.mainloop()
-
+    print("Finish")
 
 if __name__ == "__main__":
     main()
